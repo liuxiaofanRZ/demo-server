@@ -38,7 +38,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             menuMapper.setMenuLeaf(menu.getPid(),0);
         }
         if(!oldMenu.getPid().equals(menu.getPid())){
-            menuMapper.setMenuLeaf(menu.getId(),0);
+            menuMapper.setMenuLeaf(menu.getPid(),0);
             int count = this.count(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, oldMenu.getPid()));
             if(count == 0) {
                 menuMapper.setMenuLeaf(oldMenu.getPid(), 1);
