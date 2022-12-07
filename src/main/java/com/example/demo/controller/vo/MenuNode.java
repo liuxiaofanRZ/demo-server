@@ -8,20 +8,21 @@ import java.util.List;
 
 @Data
 public class MenuNode {
-    private Integer id;
+    private String id;
     private String path;
     private String name;
-    private Integer pid = 0;
+    private String pid = "0";
     private String title;
     private String component;
     private Boolean isLeaf;
-    private List<MenuNode> children = new ArrayList<>();
+    private List<MenuNode> children;
     public MenuNode(Menu menu) {
         this.id = menu.getId();
         this.path = menu.getPath();
         this.pid = menu.getPid();
         this.title = menu.getTitle();
         this.component = menu.getComponent();
+        this.name = menu.getName();
         this.isLeaf = menu.getIsLeaf();
     }
 }

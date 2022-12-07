@@ -24,8 +24,6 @@ import java.util.Objects;
 public class MenuController {
     @Autowired
     private MenuService menuService;
-    @Autowired
-    private MenuMapper menuMapper;
 
     @GetMapping("/list")
     public Result<IPage<Menu>> getList(@RequestParam(defaultValue = "1") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) {
@@ -40,7 +38,7 @@ public class MenuController {
     }
 
     @GetMapping("/listByPid/{pid}")
-    public Result<List<Menu>> getListById(@PathVariable Integer pid) {
+    public Result<List<Menu>> getListById(@PathVariable String pid) {
         LambdaQueryWrapper<Menu> query = new LambdaQueryWrapper<>();
         query.eq(Menu::getPid, pid);
         List<Menu> list = menuService.list(query);
@@ -50,16 +48,17 @@ public class MenuController {
     @GetMapping("/treeList")
     public Result<List<MenuNode>> queryTreeList() {
         List<Menu> list = menuService.list();
-        return Result.ok(getTreeList(new ArrayList<MenuNode>(), list, 0), "查询成功！");
+        return Result.ok(getTreeList(new ArrayList<MenuNode>(), list, "0"), "查询成功！");
     }
 
-    public List<MenuNode> getTreeList(List<MenuNode> treeList, List<Menu> list, Integer pid) {
+    public List<MenuNode> getTreeList(List<MenuNode> treeList, List<Menu> list, String pid) {
         for (Menu menu : list) {
             if (pid.equals(menu.getPid())) {
                 MenuNode menuNode = new MenuNode(menu);
                 treeList.add(menuNode);
-                if(!menu.getIsLeaf()) {
-                    getTreeList(menuNode.getChildren(), list, menuNode.getPid());
+                if (!menu.getIsLeaf()) {
+                    menuNode.setChildren(new ArrayList<>());
+                    getTreeList(menuNode.getChildren(), list, menuNode.getId());
                 }
             }
         }
@@ -68,27 +67,28 @@ public class MenuController {
 
     @PostMapping("/add")
     public Result<Menu> add(@RequestBody Menu menu) {
-        boolean res = menuService.save(menu);
-        System.out.println("res:" + res);
+        menuService.addMenu(menu);
         return Result.ok(menu, "添加成功！");
     }
 
     @PostMapping("/edit")
     public Result<Menu> edit(@RequestBody Menu menu) {
-        boolean res = menuService.updateById(menu);
-        if (res) {
+        try {
+            menuService.editMenu(menu);
             return Result.ok(menu, "编辑成功！");
-        } else {
+
+        } catch (Exception e) {
             return Result.error("编辑失败！", null);
+
         }
     }
 
     @PostMapping("/delete")
     public Result<Menu> delete(@RequestBody Menu menu) {
-        boolean res = menuService.removeById(menu.getId());
-        if (res) {
+        try {
+            menuService.deleteMenuById(menu.getId());
             return Result.ok(null, "删除成功！");
-        } else {
+        } catch (Exception e) {
             return Result.error("删除失败！", null);
         }
     }
