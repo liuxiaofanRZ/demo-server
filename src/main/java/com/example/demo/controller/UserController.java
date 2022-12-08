@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.qo.BatchDeleteQo;
 import com.example.demo.service.UserService;
 import com.example.demo.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,12 @@ public class UserController {
     public Result<?> deleteUser(@RequestBody User user) {
         userService.removeById(user.getId());
         return Result.ok(null, "删除成功！");
+    }
+    // 批量删除
+    @PostMapping("/deleteBatch")
+    public Result<?> batchDelete(@RequestBody BatchDeleteQo batchDeleteQo) {
+        userService.removeByIds(batchDeleteQo.getIds());
+        return Result.ok(null,"批量删除成功！");
     }
 
 }
