@@ -12,5 +12,5 @@ public class Menu extends BaseEntity {
     private String title;
     private String component;
     private Boolean isLeaf;
-
+    private Boolean isExternal;
 }

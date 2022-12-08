@@ -15,6 +15,7 @@ public class MenuNode {
     private String title;
     private String component;
     private Boolean isLeaf;
+    private Boolean isExternal;
     private List<MenuNode> children;
     public MenuNode(Menu menu) {
         this.id = menu.getId();
@@ -24,5 +25,6 @@ public class MenuNode {
         this.component = menu.getComponent();
         this.name = menu.getName();
         this.isLeaf = menu.getIsLeaf();
+        this.isExternal = menu.getIsExternal();
     }
 }
