@@ -1,4 +1,4 @@
-package com.example.demo.qo;
+package com.example.demo.controller.qo;
 
 import lombok.Data;
 

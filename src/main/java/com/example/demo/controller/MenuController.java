@@ -6,19 +6,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.controller.vo.MenuNode;
 import com.example.demo.entity.Menu;
-import com.example.demo.mapper.MenuMapper;
-import com.example.demo.qo.BatchDeleteQo;
+import com.example.demo.controller.qo.BatchDeleteQo;
 import com.example.demo.service.MenuService;
 import com.example.demo.util.Result;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.soap.Node;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/menu")
