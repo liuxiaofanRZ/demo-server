@@ -6,8 +6,8 @@
         insert into t_menu (`path`, `name`, `pid`, `title`)
         values (#{path}, #{name}, #{pid}, #{title})
     </insert>
-    <select id="test" resultType="com.example.demo.entity.Menu">
-        select * from t_menu
-    </select>
+    <update id="setMenuLeaf">
+        update t_menu set is_leaf=#{leaf} where id=#{id}
+    </update>
 
 </mapper>
