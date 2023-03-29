@@ -23,10 +23,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     public void addMenu(Menu menu) {
         String pid = menu.getPid();
-        if(!pid.equals("0")) {
-            menuMapper.setMenuLeaf(pid,0);
+        if (!pid.equals("0")) {
+            menuMapper.setMenuLeaf(pid, 0);
         }
-        menu.setIsLeaf(true);
         this.save(menu);
     }
 
@@ -34,15 +33,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         Menu oldMenu = this.getById(menu.getId());
 
         this.updateById(menu);
-        if(!menu.getPid().equals("0")) {
-            menuMapper.setMenuLeaf(menu.getPid(),0);
-        }
-        if(!oldMenu.getPid().equals(menu.getPid())){
-            menuMapper.setMenuLeaf(menu.getPid(),0);
-            int count = this.count(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, oldMenu.getPid()));
-            if(count == 0) {
-                menuMapper.setMenuLeaf(oldMenu.getPid(), 1);
-            }
+        if (!oldMenu.getPid().equals(menu.getPid())) {
+            menuMapper.setMenuLeaf(menu.getPid(), 0);
+            this.modifyIsLeafAfterRemoveChild(oldMenu.getPid());
         }
     }
 
@@ -52,15 +45,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             throw new DemoException("未找到菜单信息");
         }
         String pid = menu.getPid();
+        this.removeById(id);
         if (!pid.equals("0")) {
-            int count = this.count(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid));
-            if (count == 1) {
-                menuMapper.setMenuLeaf(pid, 1);
-            }
+            this.modifyIsLeafAfterRemoveChild(pid);
         }
-
-        menuMapper.deleteById(id);
         this.removeChildrenByPid(id);
+    }
+
+    private void modifyIsLeafAfterRemoveChild(String pid) {
+        long count = this.count(new LambdaQueryWrapper<Menu>().eq(Menu::getPid, pid));
+        if(count == 0) {
+            menuMapper.setMenuLeaf(pid, 1);
+        }
     }
 
     public void removeChildrenByPid(String pid) {

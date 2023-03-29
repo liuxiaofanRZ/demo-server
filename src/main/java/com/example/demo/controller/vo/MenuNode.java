@@ -11,11 +11,13 @@ public class MenuNode {
     private String id;
     private String path;
     private String name;
-    private String pid = "0";
+    private String pid;
     private String title;
     private String component;
+    private Integer order;
     private Boolean isLeaf;
     private Boolean isExternal;
+    private Boolean isNewPage;
     private List<MenuNode> children;
     public MenuNode(Menu menu) {
         this.id = menu.getId();
@@ -25,6 +27,8 @@ public class MenuNode {
         this.component = menu.getComponent();
         this.name = menu.getName();
         this.isLeaf = menu.getIsLeaf();
+        this.isNewPage = menu.getIsNewPage();
+        this.order = menu.getOrder();
         this.isExternal = menu.getIsExternal();
     }
 }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.controller.vo.MenuNode;
 import com.example.demo.entity.Menu;
 import com.example.demo.controller.qo.BatchDeleteQo;
+import com.example.demo.mapper.MenuMapper;
 import com.example.demo.service.MenuService;
 import com.example.demo.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import java.util.List;
 public class MenuController {
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private MenuMapper menuMapper;
 
     @GetMapping("/list")
     public Result<IPage<Menu>> getList(@RequestParam(defaultValue = "1") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) {
@@ -44,7 +47,9 @@ public class MenuController {
 
     @GetMapping("/treeList")
     public Result<List<MenuNode>> queryTreeList() {
-        List<Menu> list = menuService.list();
+        LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(Menu::getOrder);
+        List<Menu> list = menuService.list(queryWrapper);
         return Result.ok(getTreeList(new ArrayList<MenuNode>(), list, "0"), "查询成功！");
     }
 
@@ -89,15 +94,16 @@ public class MenuController {
             return Result.error("删除失败！", null);
         }
     }
+
     @PostMapping("/deleteBatch")
     public Result<Menu> delete(@RequestBody BatchDeleteQo batchDeleteQo) {
         try {
-            for (String id:batchDeleteQo.getIds()) {
+            for (String id : batchDeleteQo.getIds()) {
                 menuService.deleteMenuById(id);
             }
             return Result.ok(null, "删除成功！");
-        }catch (Exception e) {
-            return Result.error("删除失败！",null);
+        } catch (Exception e) {
+            return Result.error("删除失败！", null);
         }
     }
 }
